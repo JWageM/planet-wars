@@ -13,8 +13,8 @@ import sklearn
 import sklearn.linear_model
 from sklearn.externals import joblib
 
-from bots.rand import rand
-# from bots.alphabeta import alphabeta
+#from bots.rand import rand
+from bots.alphabeta import alphabeta
 from bots.ml import ml
 
 from bots.ml.ml import features
@@ -22,15 +22,15 @@ from bots.ml.ml import features
 import matplotlib.pyplot as plt
 
 # How many games to play
-GAMES = 1000
+GAMES = 100
 # Number of planets in the field
 NUM_PLANETS = 6
 # Maximum number of turns to play
 NUM_TURNS = 100
 
 # The player we'll observe
-player = rand.Bot()
-# player = alphabeta.Bot()
+# player = rand.Bot()
+player = alphabeta.Bot()
 
 data = []
 target = []
@@ -75,7 +75,7 @@ for str in target:
 print('instances per class: {}'.format(count))
 
 # Store the model in the ml directory
-joblib.dump(model, './bots/ml/model.pkl')
+joblib.dump(model, './bots/ml/model-AB-100.pkl')
 
 print('Done')
 

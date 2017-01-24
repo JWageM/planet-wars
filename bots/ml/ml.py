@@ -9,7 +9,7 @@ import random, os
 
 from sklearn.externals import joblib
 
-DEFAULT_MODEL = os.path.dirname(os.path.realpath(__file__)) + '/model.pkl'
+DEFAULT_MODEL = os.path.dirname(os.path.realpath(__file__)) + '/model-AB-100.pkl'
 
 class Bot:
 
@@ -58,7 +58,9 @@ class Bot:
 
         for move in moves:
 
-            value ???
+            next_state = state.next(move)
+
+            value, m = self.value(next_state,alpha,beta,depth+1)
 
             if maximizing(state):
                 if value > best_value:
@@ -73,8 +75,12 @@ class Bot:
 
             # Prune the search tree
             # We know this state will never be chosen, so we stop evaluating its children
-            if ???:
-                break
+            if maximizing(state):
+                if best_value >= beta:
+                    break
+            else:
+                if best_value <= alpha:
+                    break
 
         return best_value, best_move
 
@@ -113,19 +119,41 @@ def features(state):
     :param state: A state to be converted to a feature vector
     :return: A tuple of floats: a feature vector representing this state.
     """
+    p1_id = 1
+    p2_id = 2
 
-    # How many ships does p1 have in garrisons?
     p1_garrisons = 0.0
-    # How many ships does p2 have in garrisons?
     p2_garrisons = 0.0
 
-    ???
-
-    # How many ships does p1 have in fleets?
     p1_fleets = 0.0
-    # How many ships does p2 have in fleets?
+    p1_rel_fleets = 0.0
     p2_fleets = 0.0
+    p2_rel_fleets = 0.0
 
-    ???
+    p1_generation = 0.0
+    p2_generation = 0.0
 
-    return p1_garrisons, p2_garrisons, p1_fleets, p2_fleets
+    for planet in state.planets(p1_id):
+        p1_garrisons += state.garrison(planet)
+    for planet in state.planets(p2_id):
+        p2_garrisons += state.garrison(planet)
+    p1_rel_garrisons = p1_garrisons / (p1_garrisons + p2_garrisons)
+    p2_rel_garrisons = p2_garrisons / (p1_garrisons + p2_garrisons)
+
+    for fleet in state.fleets():
+        if fleet.owner ==1:
+            p1_fleets += fleet.size()
+        if fleet.owner ==2:
+            p2_fleets += fleet.size()
+    if p1_fleets >0:
+        p1_rel_fleets = p1_fleets / (p1_fleets + p2_fleets)
+    if p2_fleets >0:
+        p2_rel_fleets = p2_fleets / (p1_fleets + p2_fleets)
+
+    for planet in state.planets(p1_id):
+        p1_generation += planet.size()
+    for planet in state.planets(p2_id):
+        p2_generation += planet.size()
+
+
+    return p1_rel_garrisons, p2_rel_garrisons, p1_rel_fleets, p2_rel_fleets, p1_generation, p2_generation
