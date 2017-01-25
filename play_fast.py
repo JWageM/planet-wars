@@ -33,7 +33,7 @@ def call_engine_fast(options):
     if not outfile.endswith('.pdf'):
         outfile += '.pdf'
 
-    engine_fast.play(player1, player2, state=state, max_time=options.max_time*1000, verbose=(not options.quiet), outfile=outfile)
+    engine_fast.play(player1, player2, state=state, max_time=options.max_time*1000, max_turns=300, verbose=(not options.quiet), outfile=outfile)
 
 if __name__ == "__main__":
 
