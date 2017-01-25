@@ -43,8 +43,12 @@ def main():
             i += 1
             (bid, mid), winner, state_vectors, (map_size, seed) = ret
 
-            # Treat DRAW as losing
-            result = 'won' if winner == 1 else 'lost'
+            if winner == 1:
+                result = 'won'
+            elif winner == 2:
+                result = 'lost'
+            else:
+                result = 'draw'
 
             data  += state_vectors
             target += [result] * len(state_vectors)
@@ -63,6 +67,7 @@ def main():
     pool.join()
 
     log("All games finished", type="SUCCESS")
+
     generate_model(data, target)
 
 
@@ -91,12 +96,12 @@ def gen_rounds(bots):
             for i in range(args.matches):
                 mid = map_id * args.matches + i
                 seed = random.randint(0, 100000)
-                yield ((bid, mid), bot, (map_size, seed, args.max_turns))
+                yield ((bid, mid), bot, (map_size, seed, args.max_turns, args.asym))
 
 
 def execute(params):
-    ids, bot, (map_size, seed, max_turns) = params
-    state, _ = State.generate(map_size, seed)
+    ids, bot, (map_size, seed, max_turns, asym) = params
+    state, _ = State.generate(map_size, seed, symmetric=not asym)
 
     state_vectors = []
     i = 0
@@ -192,6 +197,10 @@ def optparse():
     parser.add_argument("-v", "--verbose",
                         action="count", default=0,
                         help="Show more output")
+
+    parser.add_argument("-a", "--asym", dest="asym",
+                        help="Whether to start with an asymmetric state.",
+                        action="store_true")
 
     parser.set_defaults(color=has_colours(sys.stdout))
 

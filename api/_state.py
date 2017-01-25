@@ -437,7 +437,7 @@ class State:
         return res
 
     @staticmethod
-    def generate(num_planets, id=None):
+    def generate(num_planets, id=None, symmetric=True):
         # type: () -> (State, id)
         """
         Generates a random start state: a random map, with home planets assigned
@@ -451,6 +451,9 @@ class State:
 
         :return: A pair of a starting state and its id.
         """
+
+        if not symmetric:
+            return State.generate_asym(num_planets, id)
 
         if id is None:
             id = random.randint(0, 100000)
@@ -483,6 +486,37 @@ class State:
 
             garrisons.append(rng.randint(1, 30))
             planets.append(Planet(x, y, size, num_planets - 1))
+
+        map = Map(planets)
+
+        state = State.make(map, garrisons, [0], [1])
+
+        return state, id
+
+    @staticmethod
+    def generate_asym(num_planets, id=None):
+        if id is None:
+            id = random.randint(0, 100000)
+
+            # Create an RNG with id as the seed
+        rng = random.Random(id)
+
+        planets = []
+
+        # Home planets
+        planets.append(Planet(0.0, 0.0, 1, 0))
+        planets.append(Planet(1.0, 1.0, 1, 1))
+
+        garrisons = [100, 100]
+
+        # Rest of the planets
+        for i in range(num_planets):
+            x = round(rng.random(), 2)
+            y = round(rng.random(), 2)
+            size = 1.0 / rng.choice([1] + [3, 5, 7, 13, 17] * 3)
+
+            garrisons.append(rng.randint(1, 30))
+            planets.append(Planet(x, y, size, i))
 
         map = Map(planets)
 
