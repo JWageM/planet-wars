@@ -69,6 +69,7 @@ class Bot:
             # Prune the search tree
             # We know this state will never be chosen, so we stop evaluating its children
             if beta <= alpha:
+
                 # print ' ab break on ', alpha, beta
                 break
 

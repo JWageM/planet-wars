@@ -2,25 +2,32 @@ import kb, sys
 from kb import KB, Boolean, Integer, Constant
 
 # Define our symbols
-A = Boolean('A')
-B = Boolean('B')
-C = Boolean('C')
+x = Integer('x')
+y = Integer('y')
+z = Integer('z')
 
 # Create a new knowledge base
 kb = KB()
 
-# Add clauses
-kb.add_clause(A, B, C)
-kb.add_clause(~A, B)
-kb.add_clause(~B, C)
-kb.add_clause(B, ~C)
 
-# Add clause that causes contradiction
-kb.add_clause(~B, ~C)
+a = x >= z
+b = y >= x
+c = y == 1
+d = z == 2
+
+
+
+# Add clauses
+kb.add_clause(a)
+kb.add_clause(b)
+kb.add_clause(c)
+kb.add_clause(d)
+
 
 # Print all models of the knowledge base
 for model in kb.models():
     print model
 
 # Print out whether the KB is satisfiable (if there are no models, it is not satisfiable)
+print kb.satisfiable()
 print kb.satisfiable()

@@ -89,7 +89,7 @@ class Bot:
         Check whether the current state contradicts our knowledge.
         (The knowledge base describes what properties a state should satisfy  to be explored)
         """
-        v = Integer("v") # the heuristic value when the maximu m depth is reached
+        v = Integer("v") # the heuristic value when the maximum depth is reached
         a = Integer("a") # alpha
         b = Integer("b") # beta
         m = Integer("m") # how many ships player one will have (when the heuristic is computed)
@@ -98,8 +98,40 @@ class Bot:
         kb = KB()
 
         # Add clauses
-        ???
 
+        e = a==alpha
+        f = b==beta
+        g = a<v
+        h = v<b
+
+        kb.add_clause(e)
+        kb.add_clause(f)
+        kb.add_clause(a<b)
+        #kb.add_clause(m==count_ships(state, 1))#correct?
+        #kb.add_clause(h==count_ships(state, 2))
+        
+         
+        #kb.add_clause(v>=a)
+        
+        kb.add_clause(g)
+        kb.add_clause(h)
+
+        
+        current_util = heuristic(state)
+        num_planets = 6
+#         
+#         planets = state.__map.planets()
+#         gen_power = 0
+#         for planet in plants:
+#             gen_power = planet.size()
+#         
+#         levels_to_go = self._Bot__max_depth- depth
+#         upper_bound = current_util + num_planets*(levels_to_go)
+#         lower_bound = current_util - num_planets*(levels_to_go)
+#         kb.add_clause(v<=upper_bound)
+#         kb.add_clause(v>=lower_bound)
+#         
+#         
         sat = kb.satisfiable()
 
         return sat
