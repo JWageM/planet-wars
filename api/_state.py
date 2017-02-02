@@ -561,6 +561,24 @@ class State:
 
         map = Map(planets)
         state = State(map, garrisons, owners, whose_turn)
+        
+        
+        
+        
+    def __hash__(self):
+        fleet_copy = self.__fleets
+        fleet_copy.sort(cmp=None, key=lambda x: x.__hash__(), reverse=False)
+        fleet_tuple = tuple(fleet_copy)
+        
+
+        owner_tuple = tuple(self.__owner)
+
+
+        garrison_tuple = tuple(self.__garrisons)
+        
+        turn = self.whose_turn()
+        
+        return hash((turn,owner_tuple,fleet_tuple,garrison_tuple))
 
 def mult(
         seq,    # type: list[float]
